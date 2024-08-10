@@ -1,3 +1,5 @@
+// src/models/User.ts
+
 import { users as initialUsers } from '@/data/UserList';
 
 // Define the types
@@ -12,7 +14,7 @@ export interface User {
   name: string;
   email: string;
   pass: string;
-  project: ProjectAssignment; // Single object representing the project assignment
+  project: ProjectAssignment;
 }
 
 // In-memory user storage, initially empty
@@ -20,7 +22,7 @@ let users: User[] = [];
 
 // User counter for new IDs
 export const User = {
-  idCounter: Math.max(...initialUsers.map(user => parseInt(user.id, 10)), 0) + 1
+  idCounter: Math.max(...initialUsers.map(user => parseInt(user.id, 10)), 0) + 1,
 };
 
 // Initialize users with predefined data
@@ -44,7 +46,7 @@ export function addUser(id: string, role: 'admin' | 'staff' = 'staff', name: str
     name,
     email,
     pass,
-    project: { projectId: '', projectRole: 'admin' }
+    project: null, // No project assigned initially
   };
   users.push(newUser);
   return newUser;
@@ -66,7 +68,7 @@ export function getUserByEmail(email: string): User | undefined {
 
 // Update user role for a specific project
 export function updateUserRole(userId: string, newRole: 'admin' | 'contributor' | 'reviewer' | 'approver', projectId: string): { message: string, user?: User } {
-  const user = users.find(u => u.id === userId);
+  const user = getUserById(userId);
   if (user) {
     user.project = { projectId, projectRole: newRole };
     return { message: 'Role updated', user };

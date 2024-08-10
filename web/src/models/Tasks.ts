@@ -22,64 +22,65 @@ let tasks: { [projectId: string]: Task[] } = {};
 
 // Initialize tasks for a specific project
 export function initializeProjectTasks(projectId: string): Task[] {
+  // Reset the task ID counter
+  Task.idCounter = 1;
+
   const members = getProjectMembers(projectId);
   if (!members) {
     console.error(`No members found for project ID ${projectId}`);
     return [];
   }
 
-  // Reset the task ID counter to 1 for each new project
-  Task.idCounter = 1;
+  const projectTasks = initialTasks.map(task => {
+    let assignedTo = '';
 
-  const projectTasks = initialTasks
-    .map(task => {
-      let assignedTo = '';
+    // Assign the correct user based on the task persona
+    switch (task.persona) {
+      case 'contributor':
+        assignedTo = members.contributor;
+        break;
+      case 'approver':
+        assignedTo = members.approver;
+        break;
+      case 'reviewer':
+        assignedTo = members.reviewer;
+        break;
+      case 'admin':
+        assignedTo = members.admin;
+        break;
+    }
 
-      // Assign the correct user based on the task persona
-      switch (task.persona) {
-        case 'contributor':
-          assignedTo = members.contributor;
-          break;
-        case 'approver':
-          assignedTo = members.approver;
-          break;
-        case 'reviewer':
-          assignedTo = members.reviewer;
-          break;
-        case 'admin':
-          assignedTo = members.admin;
-          break;
-      }
+    return {
+      ...task,
+      id: Task.idCounter++, // Assign unique ID
+      assignedTo,
+      isCompleted: false,
+      status: task.group === 1 ? 'active' : 'pending', // Group 1 tasks are 'active', others are 'pending'
+    };
+  });
 
-      return {
-        ...task,
-        id: Task.idCounter++, // Assign unique ID starting from 1
-        assignedTo,
-        isCompleted: false,
-        status: task.group === 1 ? 'active' : 'pending', // Group 1 tasks are 'active', others are 'pending'
-      };
-    });
-
-  tasks[projectId] = projectTasks;
+  tasks[projectId] = projectTasks; // Store tasks associated with the project
   return projectTasks;
 }
 
-// Get tasks for a specific project
-export function getTasksForProject(projectId: string): Task[] {
-  return tasks[projectId] || [];
-}
+// Get tasks for a specific project, optionally filtered by status
+export function getTasks(projectId: string = '1', status?: string): Task[] {
+  // If no project ID is provided, default to project "1"
+  const projectTasks = tasks[projectId] || initialTasks.map(task => ({
+    ...task,
+    id: Task.idCounter++, // Ensure unique ID assignment
+    status: task.group === 1 ? 'active' : 'pending',
+    isCompleted: false,
+    assignedTo: '',
+  }));
 
-// Get all tasks for a specific project, optionally filtered by status
-export function getTasks(projectId: string = '1', status?: 'active' | 'pending' | 'completed'): Task[] {
-  const projectTasks = tasks[projectId] || [];
-
-  // If no status is provided, return the initial tasks list
+  // If no status is provided, return the initial task list
   if (!status) {
     return initialTasks.map(task => ({
       ...task,
       assignedTo: '',
       isCompleted: false,
-      status: task.group === 1 ? 'active' : 'pending', // Group 1 tasks are 'active', others are 'pending'
+      status: task.group === 1 ? 'active' : 'pending', // Default status based on group
     }));
   }
 

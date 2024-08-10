@@ -1,6 +1,8 @@
+// src/models/Project.ts
+
 import { projects as initialProjects } from '@/data/projectList';
-import { getUserById, isAdmin } from './User';
-import { Task, initializeProjectTasks, getTasksForProject, deleteTasksForProject } from './Tasks';
+import { getUserById, isAdmin, updateUserRole } from './User';
+import { Task, initializeProjectTasks, getTasks, deleteTasksForProject } from './Tasks';
 
 // Define the Project interface
 export interface Project {
@@ -20,7 +22,7 @@ let projects: Project[] = [];
 
 // Project ID counter for generating unique IDs
 export const Project = {
-  idCounter: 1
+  idCounter: 1,
 };
 
 // Get all projects, initialize if projects array is empty
@@ -34,10 +36,10 @@ export function getProjects(): Project[] {
 // Create a new project
 export function createProject(
   name: string,
-  userId: string,
   contributorId: string,
   approverId: string,
   reviewerId: string,
+  userId: string,
 ): Project | null {
   // Use isAdmin to check if the user is an admin
   if (!isAdmin(userId)) {
@@ -62,6 +64,12 @@ export function createProject(
   projects.push(newProject);
   Project.idCounter += 1;
 
+  // Update users with the new project assignment
+  updateUserRole(contributorId, 'contributor', newProject.id);
+  updateUserRole(approverId, 'approver', newProject.id);
+  updateUserRole(reviewerId, 'reviewer', newProject.id);
+  updateUserRole(userId, 'admin', newProject.id);
+
   return newProject;
 }
 
@@ -72,6 +80,15 @@ export function getProjectMembers(projectId: string) {
 
   const project = sourceProjects.find(p => p.id === projectId);
   return project ? project.members : null;
+}
+
+// Get project name by project ID
+export function getProjectNameById(projectId: string): string | null {
+  // Use projects array if initialized; otherwise, fallback to initialProjects
+  const sourceProjects = projects.length > 0 ? projects : initialProjects;
+
+  const project = sourceProjects.find(p => p.id === projectId);
+  return project ? project.name : null;
 }
 
 // Delete a project by ID

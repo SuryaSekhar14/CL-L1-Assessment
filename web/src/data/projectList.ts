@@ -29,16 +29,16 @@ export const projects = [
         reviewer: '2',
       }
     },
-    // {
-    //   id: '4',
-    //   name: 'DevOps',
-    //   members: {
-    //     admin: '1',
-    //     contributor: '2',
-    //     approver: '3',
-    //     reviewer: '4',
-    //   }
-    // },
+    {
+      id: '4',
+      name: 'DevOps',
+      members: {
+        admin: '1',
+        contributor: '2',
+        approver: '3',
+        reviewer: '4',
+      }
+    },
     // {
     //   id: '5',
     //   name: 'System Design',
