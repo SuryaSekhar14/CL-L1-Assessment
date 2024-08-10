@@ -121,7 +121,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         : 
                           []
                       }
-                    // onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
+                    // onClick={() => router.push(`/project/${project.id}`)}
                     style={{ cursor: 'pointer' }}
                   >
                   <div onClick={() => router.push(`/project/${project.id}`)} style={{ cursor: 'pointer' }}>

@@ -27,7 +27,6 @@ export function initializeProjectTasks(projectId: string): Task[] {
 
   const members = getProjectMembers(projectId);
   if (!members) {
-    console.error(`No members found for project ID ${projectId}`);
     return [];
   }
 
