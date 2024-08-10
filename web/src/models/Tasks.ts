@@ -64,10 +64,21 @@ export function initializeProjectTasks(projectId: string): Task[] {
 }
 
 // Get tasks for a specific project, optionally filtered by status
-export function getTasks(projectId: string = '1', status?: string): Task[] {
+export function getTasks(projectId: string, status?: string): Task[] {
+  // If no project ID is provided, return the initial tasks with default status and other properties
+  if (!projectId) {
+    return initialTasks.map(task => ({
+      ...task,
+      id: Task.idCounter++, // Ensure unique ID assignment
+      status: task.group === 1 ? 'active' : 'pending', // Default to active for group 1, pending for others
+      isCompleted: false,
+      assignedTo: '', // Default to no assignment
+    }));
+  }
+
   const projectTasks = tasks[projectId] || [];
 
-  // If no status is provided, return all tasks
+  // If no status is provided, return all tasks for the project
   if (!status) {
     return projectTasks;
   }
@@ -75,6 +86,7 @@ export function getTasks(projectId: string = '1', status?: string): Task[] {
   // Otherwise, filter tasks by the provided status
   return projectTasks.filter(task => task.status === status);
 }
+
 
 // Mark a task as completed
 export function completeTask(projectId: string, taskId: number): boolean {
@@ -109,40 +121,14 @@ export function completeTask(projectId: string, taskId: number): boolean {
 
 // Activate the next group of tasks if all current tasks are completed
 function activateNextGroup(projectId: string, nextGroup: number): void {
-  const members = getProjectMembers(projectId);
-  if (!members) return;
+  const projectTasks = tasks[projectId];
+  if (!projectTasks) return;
 
-  const newTasks = initialTasks
-    .filter(task => task.group === nextGroup)
-    .map(task => {
-      let assignedTo = '';
-
-      // Assign the correct user based on the task persona
-      switch (task.persona) {
-        case 'contributor':
-          assignedTo = members.contributor;
-          break;
-        case 'approver':
-          assignedTo = members.approver;
-          break;
-        case 'reviewer':
-          assignedTo = members.reviewer;
-          break;
-        case 'admin':
-          assignedTo = members.admin;
-          break;
-      }
-
-      return {
-        ...task,
-        id: Task.idCounter++, // Assign unique ID
-        assignedTo,
-        isCompleted: false,
-        status: 'active',
-      };
-    });
-
-  tasks[projectId].push(...newTasks);
+  projectTasks.forEach(task => {
+    if (task.group === nextGroup) {
+      task.status = 'active';
+    }
+  });
 }
 
 // Delete tasks for a specific project

@@ -2,6 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getProjects, createProject, deleteProject } from '@/models/Project';
+import { isAdmin } from '@/models/User';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -11,11 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'POST': {
       const { name, contributorId, approverId, reviewerId, userId } = req.body;
-      const newProject = createProject(name, contributorId, approverId, reviewerId, userId);
-      if (newProject) {
-        res.status(201).json({ message: 'Project created', project: newProject });
-      } else {
+      if (!isAdmin(userId)) {
         res.status(403).json({ message: 'Forbidden: Only admins can manage projects' });
+      } else {
+        const newProject = createProject(name, contributorId, approverId, reviewerId, userId);
+        res.status(201).json({ message: 'Project created', project: newProject });
       }
       break;
     }

@@ -104,7 +104,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Contributor</span>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Contributor</span>
           </div>
 
           {/* Reviewer */}
@@ -118,7 +118,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Reviewer</span>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Reviewer</span>
           </div>
 
           {/* Approver */}
@@ -132,7 +132,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Approver</span>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Approver</span>
           </div>
         </Form.Item>
       </Form>

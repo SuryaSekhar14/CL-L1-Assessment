@@ -18,7 +18,8 @@
     "next-auth": "^4.24.7",
     "next-test-api-route-handler": "^4.0.8",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.17.0",

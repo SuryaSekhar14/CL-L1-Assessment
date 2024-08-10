@@ -12,16 +12,10 @@ export const users = [
     name: "User1",
     email: "user1@example.com",
     pass: "111",
-    project: [
-      {
-          projectId: "123",
-          projectRole: "admin"
-      },
-      {
-          projectId: "456",
+    project: {
+          projectId: "1",
           projectRole: "admin"
       }
-    ]
   },
   {
     id: "2", 
@@ -29,12 +23,10 @@ export const users = [
     name: "User2",
     email: "user2@example.com",
     pass: "222",
-    project: [
-      {
-          projectId: "456",
+    project: {
+          projectId: "1",
           projectRole: "contributor"
       }
-    ]
   },
   {
     id: "3", 
@@ -42,16 +34,10 @@ export const users = [
     name: "User3",
     email: "user3@example.com",
     pass: "333",
-    project: [
-      {
-          projectId: "123",
-          projectRole: "contributor"
-      },
-      {
-          projectId: "789",
-          projectRole: "contributor"
+    project: {
+          projectId: "1",
+          projectRole: "approver"
       }
-    ]
   },
   {
     id: "4", 
@@ -59,11 +45,9 @@ export const users = [
     name: "User4",
     email: "user4@example.com",
     pass: "444",
-    project: [
-      {
-        projectId: "789",
+    project: {
+        projectId: "1",
           projectRole: "reviewer"
       }
-    ]
   },
 ];

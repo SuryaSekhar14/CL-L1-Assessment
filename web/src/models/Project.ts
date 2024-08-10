@@ -1,5 +1,3 @@
-// src/models/Project.ts
-
 import { projects as initialProjects } from '@/data/projectList';
 import { getUserById, isAdmin, updateUserRole } from './User';
 import { Task, initializeProjectTasks, getTasks, deleteTasksForProject } from './Tasks';
@@ -40,13 +38,13 @@ export function createProject(
   approverId: string,
   reviewerId: string,
   userId: string,
-): Project | null {
-  // Use isAdmin to check if the user is an admin
-  if (!isAdmin(userId)) {
-    console.log(isAdmin(userId));
-    return null; // Return null if the user is not an admin
-  }
-
+): Project {
+  // // Use isAdmin to check if the user is an admin
+  // if (!isAdmin(userId)) {
+  //   console.log(isAdmin(userId));
+  //   return null; // Return null if the user is not an admin
+  // }
+ 
   const projectTasks: Task[] = initializeProjectTasks(Project.idCounter.toString());
 
   const newProject: Project = {

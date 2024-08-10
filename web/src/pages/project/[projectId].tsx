@@ -1,13 +1,11 @@
-// pages/projects/[projectId].tsx
-
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getProjectNameById } from '@/models/Project';
 import TasksList from '@/components/TasksList';
 
 const ProjectTasksPage = () => {
-  const router = useRouter();
-  const { projectId } = router.query;
+  const { query } = useRouter();
+  const projectId = query.projectId as string;
   const [projectName, setProjectName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,14 +15,13 @@ const ProjectTasksPage = () => {
     }
   }, [projectId]);
 
-  if (!projectId || !projectName) {
-    return <div>Loading...</div>; // Handle loading state
+  if (!projectId) {
+    return <div>Project ID not found... {projectId} {projectName}</div>; // Handle loading state
   }
 
   return (
     <div>
-      <h1>{projectName}</h1>
-      <TasksList projectId={projectId as string} />
+      <TasksList projectId={projectId as string} projectName={projectName as string} />
     </div>
   );
 };

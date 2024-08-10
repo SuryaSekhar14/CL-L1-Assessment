@@ -175,7 +175,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         <DeleteOutlined key="delete" />,
                       ]
                     }
-                      onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
+                      onClick={() => router.push(`/project/${project.id}`)}
                       style={{ cursor: 'pointer' }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

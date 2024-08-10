@@ -5,16 +5,16 @@ import { users as initialUsers } from '@/data/UserList';
 // Define the types
 export interface ProjectAssignment {
   projectId: string;
-  projectRole: 'admin' | 'contributor' | 'reviewer' | 'approver';
+  projectRole: string;
 }
 
 export interface User {
   id: string;
-  role: 'admin' | 'staff';
+  role: string;
   name: string;
   email: string;
   pass: string;
-  project: ProjectAssignment;
+  project: ProjectAssignment; // Update the type of the project property
 }
 
 // In-memory user storage, initially empty
@@ -38,7 +38,7 @@ export function getUsers(): User[] {
   return users;
 }
 
-// Add a new user
+// // Add a new user
 export function addUser(id: string, role: 'admin' | 'staff' = 'staff', name: string = '', email: string = '', pass: string = ''): User {
   const newUser: User = {
     id,
@@ -46,7 +46,7 @@ export function addUser(id: string, role: 'admin' | 'staff' = 'staff', name: str
     name,
     email,
     pass,
-    project: null, // No project assigned initially
+    project: { projectId: '', projectRole: '' },
   };
   users.push(newUser);
   return newUser;

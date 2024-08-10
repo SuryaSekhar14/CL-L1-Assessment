@@ -15,7 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     case 'POST':
       try {
         const { id, role = 'staff', name = '', email = '', pass = '' } = req.body;
-        if (!id) {
+        if (!id) { 
           res.status(400).json({ message: 'Missing id' });
           return;
         }

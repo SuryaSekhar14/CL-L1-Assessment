@@ -58,6 +58,7 @@ describe("Tasks API", () => {
           taskId: 2,
           updates: { status: "completed" },
           userId: "2",
+          projectId: project.id,
         },
       }));
 
@@ -84,6 +85,7 @@ describe("Tasks API", () => {
         taskId: 1,
         updates: { status: "completed" },
         userId: "reviewer1",
+        projectId: project.id,
       },
     });
 
