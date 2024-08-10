@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Layout, Row, Col, Card, message, Tag, Typography } from 'antd';
+import { Button, Layout, Row, Col, Card, message, Tag, Typography, Badge } from 'antd';
 import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
 import { Task } from '@/models/Tasks';
@@ -105,7 +105,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
         </div>
         <Row gutter={24}>
           <Col span={8}>
-            <Title level={4} style={{ marginBottom: '16px' }}>To Do <Tag>{tasksToDo.length}</Tag></Title>
+            <Title level={4} style={{ marginBottom: '16px' }}>To Do <Badge count={tasksToDo.length} showZero color="#595959" /> </Title>
 
             <Row>
               {tasksToDo.map(task => (
@@ -124,7 +124,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
           </Col>
 
           <Col span={8}>
-            <Title level={4} style={{ marginBottom: '16px' }}>In Progress <Tag>{tasksInProgress.length}</Tag></Title>
+            <Title level={4} style={{ marginBottom: '16px' }}>In Progress <Badge count={tasksInProgress.length} showZero color="#E667FF" /></Title>
 
             <Row>
               {tasksInProgress.map(task => (
@@ -153,7 +153,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
           </Col>
 
           <Col span={8}>
-            <Title level={4} style={{ marginBottom: '16px' }}>Completed <Tag color="green">{tasksCompleted.length}</Tag></Title>
+            <Title level={4} style={{ marginBottom: '16px' }}>Completed <Badge count={tasksCompleted.length} showZero color="#52C41A" /></Title>
 
             <Row>
               {tasksCompleted.map(task => (
