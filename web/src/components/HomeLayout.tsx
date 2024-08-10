@@ -121,9 +121,10 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         : 
                           []
                       }
-                    onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
+                    // onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
                     style={{ cursor: 'pointer' }}
                   >
+                  <div onClick={() => router.push(`/project/${project.id}`)} style={{ cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <p style={{ margin: 0 }}>Progress</p>
                       <p style={{ margin: 0 }}>{`${completedTasks}/${totalTasks} Tasks`}</p>
@@ -142,15 +143,18 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         ))}
                       </Avatar.Group>
                     </div>
+                  </div>
                   </Card>
                 </Col>
               );
             })}
           </Row>
         </TabPane>
+
         <TabPane tab="Assigned to Me" key="2">
           {/* Add content for Assigned to Me */}
         </TabPane>
+
         <TabPane tab="Bookmarked" key="3">
           <Row gutter={[16, 16]}>
             {filteredProjects

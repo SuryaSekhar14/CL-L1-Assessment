@@ -86,23 +86,32 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
         }} 
         notificationsCount={2} 
       />
-      <Content style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
+      <Content style= {{ margin: 50 }}>
         <Title level={2} style={{ marginBottom: '24px', textAlign: 'left' }}>{projectName}</Title>
         <Row gutter={24}>
           <Col span={8}>
             <Title level={4} style={{ marginBottom: '16px' }}>To Do <Tag>{tasksToDo.length}</Tag></Title>
+
+            <Row>
             {tasksToDo.map(task => (
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+              <Col span={12} style={{ padding : 5 }}>
+              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%'}}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
                 <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
               </Card>
+              </Col>
             ))}
+            </Row>
           </Col>
+
           <Col span={8}>
             <Title level={4} style={{ marginBottom: '16px' }}>In Progress <Tag>{tasksInProgress.length}</Tag></Title>
+
+            <Row>
             {tasksInProgress.map(task => (
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+              <Col span={12} style={{ padding : 5 }}>
+              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
                 <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
@@ -119,20 +128,27 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
                           :
                           null
                 }
-                
               </Card>
+              </Col>
             ))}
+          </Row>
           </Col>
+
           <Col span={8}>
             <Title level={4} style={{ marginBottom: '16px' }}>Completed <Tag color="green">{tasksCompleted.length}</Tag></Title>
+
+            <Row>
             {tasksCompleted.map(task => (
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
+              <Col span={12} style={{ padding : 5 }}>
+              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Completed by {task.assignedTo}</p>
                 <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
                 <Tag color="green" icon={<CheckOutlined />}>Completed</Tag>
               </Card>
+              </Col>
             ))}
+            </Row>
           </Col>
         </Row>
       </Content>
