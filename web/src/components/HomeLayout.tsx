@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled, CheckOutlined } from '@ant-design/icons';
 import CreateProjectModal from './CreateProjectModal';
 import { createAvatar } from '@/components/helper/createAvatar';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -8,10 +8,29 @@ import { useUserSession } from '@/hooks/useUserSession';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
+interface Project {
+  id: string;
+  name: string;
+  members: {
+    contributor: string;
+    approver: string;
+    reviewer: string;
+    admin: string;
+  };
+  tasks: {
+    id: string;
+    title: string;
+    status: 'active' | 'pending' | 'completed';
+    assignedTo: string;
+  }[];
+}
+
 const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
   const [visible, setVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [bookmarked, setBookmarked] = useState<string[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const user = {
     name: 'Lucian Grey',
@@ -19,19 +38,27 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
     avatarUrl: 'https://joeschmoe.io/api/v1/random',
   };
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) throw new Error('Failed to fetch projects');
+        const data = await response.json();
+        setProjects(data.projects);
+      } catch (error) {
+        message.error('Error loading projects');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const onCreate = (values: any) => {
     console.log('Received values from the form: ', values);
     setVisible(false);
   };
-
-  const projects = [
-    { name: 'Web Development', progress: 20, tasksCompleted: 2, totalTasks: 10, members: ['K', 'R', 'U'] },
-    { name: 'UI/UX Course', progress: 50, tasksCompleted: 5, totalTasks: 10, members: ['K', 'R', 'U'] },
-    { name: 'AI and Machine Learning', progress: 100, tasksCompleted: 10, totalTasks: 10, members: ['K', 'R', 'U'] },
-    { name: 'DevOps', progress: 20, tasksCompleted: 2, totalTasks: 10, members: ['K', 'R', 'U'] },
-    { name: 'System Design', progress: 50, tasksCompleted: 5, totalTasks: 10, members: ['K', 'R', 'U'] },
-    { name: 'Front-End Development', progress: 100, tasksCompleted: 10, totalTasks: 10, members: ['K', 'R', 'U'] },
-  ];
 
   const filteredProjects = projects.filter(project =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -44,6 +71,10 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
         : [...prev, projectName]
     );
   };
+
+  if (loading) {
+    return <p>Loading projects...</p>;
+  }
 
   return (
     <Content style={{ padding: '24px' }}>
@@ -68,40 +99,51 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
       >
         <TabPane tab="All" key="1">
           <Row gutter={[16, 16]}>
-            {filteredProjects.map((project, index) => (
-              <Col span={8} key={index}>
-                <Card
-                  title={project.name}
-                  extra={
-                    bookmarked.includes(project.name)
-                      ? <BookFilled onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
-                      : <BookOutlined onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
-                  }
-                  actions={
-                    role === "admin" ? 
-                        [<EditOutlined key="edit" />,
-                        <DeleteOutlined key="delete" />] 
-                      : 
-                        []
+            {filteredProjects.map((project, index) => {
+              const completedTasks = project.tasks.filter(task => task.status === 'completed').length;
+              const totalTasks = project.tasks.length;
+              const progress = (completedTasks / totalTasks) * 100;
+
+              // Extract member names from the members object
+              const memberNames = Object.values(project.members);
+
+              return (
+                <Col span={8} key={index}>
+                  <Card
+                    title={project.name}
+                    extra={
+                      bookmarked.includes(project.name)
+                        ? <BookFilled onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
+                        : <BookOutlined onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
                     }
-                >
-                  <p>Progress</p>
-                  <Progress percent={project.progress} status={project.progress === 100 ? 'success' : 'active'} />
-                  <p>{`${project.tasksCompleted}/${project.totalTasks} Tasks`}</p>
-                  <div style={{ marginTop: '12px' }}>
-                    <Avatar.Group>
-                      {project.members.map((member, idx) => (
-                        <Tooltip title={`Member ${idx + 1}`} key={idx}>
-                          <Avatar style={{ backgroundColor: idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00', marginRight: '8px' }}>
-                            {member}
-                          </Avatar>
-                        </Tooltip>
-                      ))}
-                    </Avatar.Group>
-                  </div>
-                </Card>
-              </Col>
-            ))}
+                    actions={
+                      role === "admin" ? 
+                          [<EditOutlined key="edit" />,
+                          <DeleteOutlined key="delete" />] 
+                        : 
+                          []
+                      }
+                  >
+                    <p>Progress</p>
+                    <Progress 
+                      percent={progress} 
+                      status={progress === 100 ? 'success' : 'active'} 
+                      format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
+                    />
+                    <p>{`${completedTasks}/${totalTasks} Tasks`}</p>
+                    <div style={{ marginTop: '12px' }}>
+                      <Avatar.Group>
+                        {memberNames.map((member, idx) => (
+                          <Tooltip title={member} key={idx}>
+                            {createAvatar(member, 40, idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00')}
+                          </Tooltip>
+                        ))}
+                      </Avatar.Group>
+                    </div>
+                  </Card>
+                </Col>
+              );
+            })}
           </Row>
         </TabPane>
         <TabPane tab="Assigned to Me" key="2">
@@ -111,37 +153,48 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
           <Row gutter={[16, 16]}>
             {filteredProjects
               .filter(project => bookmarked.includes(project.name))
-              .map((project, index) => (
-                <Col span={8} key={index}>
-                  <Card
-                    title={project.name}
-                    extra={
-                      <BookFilled onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
+              .map((project, index) => {
+                const completedTasks = project.tasks.filter(task => task.status === 'completed').length;
+                const totalTasks = project.tasks.length;
+                const progress = (completedTasks / totalTasks) * 100;
+
+                // Extract member names from the members object
+                const memberNames = Object.values(project.members);
+
+                return (
+                  <Col span={8} key={index}>
+                    <Card
+                      title={project.name}
+                      extra={
+                        <BookFilled onClick={() => toggleBookmark(project.name)} style={{ cursor: 'pointer' }} />
+                      }
+                      actions={
+                        [
+                        <EditOutlined key="edit" />,
+                        <DeleteOutlined key="delete" />,
+                      ]
                     }
-                    actions={
-                      [
-                      <EditOutlined key="edit" />,
-                      <DeleteOutlined key="delete" />,
-                    ]
-                  }
-                  >
-                    <p>Progress</p>
-                    <Progress percent={project.progress} status={project.progress === 100 ? 'success' : 'active'} />
-                    <p>{`${project.tasksCompleted}/${project.totalTasks} Tasks`}</p>
-                    <div style={{ marginTop: '12px' }}>
-                      <Avatar.Group>
-                        {project.members.map((member, idx) => (
-                          <Tooltip title={`Member ${idx + 1}`} key={idx}>
-                            <Avatar style={{ backgroundColor: idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00', marginRight: '8px' }}>
-                              {member}
-                            </Avatar>
-                          </Tooltip>
-                        ))}
-                      </Avatar.Group>
-                    </div>
-                  </Card>
-                </Col>
-              ))}
+                    >
+                      <p>Progress</p>
+                      <Progress 
+                        percent={progress} 
+                        status={progress === 100 ? 'success' : 'active'} 
+                        format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
+                      />
+                      <p>{`${completedTasks}/${totalTasks} Tasks`}</p>
+                      <div style={{ marginTop: '12px' }}>
+                        <Avatar.Group>
+                          {memberNames.map((member, idx) => (
+                            <Tooltip title={member} key={idx}>
+                              {createAvatar(member, 40, idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00')}
+                            </Tooltip>
+                          ))}
+                        </Avatar.Group>
+                      </div>
+                    </Card>
+                  </Col>
+                );
+              })}
           </Row>
         </TabPane>
       </Tabs>
