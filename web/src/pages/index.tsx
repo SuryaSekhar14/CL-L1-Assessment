@@ -8,10 +8,10 @@ import { User } from '@/models/User';
 
 const HomePage = () => {
   // const user = {
-  //   name: 'Lucian Grey',
-  //   email: 'lucian@gmail.com',
+  //   name: 'meow meow',
+  //   email: 'surya@gmail.com',
   //   role: 'Admin',
-  //   avatarUrl: 'https://joeschmoe.io/api/v1/random',
+  //   avatarUrl: 'https://suryasekhardatta.com',
   // };
   
   const notificationsCount = 9;
@@ -23,7 +23,7 @@ const HomePage = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Navbar user={loggedInUser as unknown as Partial<User>} notificationsCount={notificationsCount} />
-      <HomeLayout role={userRole as string}/>
+      <HomeLayout role={userRole as string} user={loggedInUser as User}/>
     </Layout>
   );
 };

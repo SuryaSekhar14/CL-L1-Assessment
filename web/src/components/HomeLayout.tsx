@@ -5,6 +5,7 @@ import CreateProjectModal from './CreateProjectModal';
 import { createAvatar } from '@/components/helper/createAvatar';
 import { useRouter } from 'next/router';
 import { useUserSession } from '@/hooks/useUserSession';
+import { User } from '@/models/User';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -26,7 +27,7 @@ interface Project {
   }[];
 }
 
-const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
+const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
   const [visible, setVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [bookmarked, setBookmarked] = useState<string[]>([]);
@@ -34,6 +35,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
+  console.log(user);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -152,7 +154,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
         </TabPane>
 
         <TabPane tab="Assigned to Me" key="2">
-          {/* Add content for Assigned to Me */}
+            {/* hehe */}
         </TabPane>
 
         <TabPane tab="Bookmarked" key="3">
