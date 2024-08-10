@@ -55,6 +55,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
   const onCreate = (values: any) => {
     console.log('Received values from the form: ', values);
     setVisible(false);
+    setProjects(prev => [...prev, values]);
   };
 
   const filteredProjects = projects.filter(project =>
