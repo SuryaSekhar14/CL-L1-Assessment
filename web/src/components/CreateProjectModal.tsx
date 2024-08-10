@@ -1,5 +1,7 @@
 import React from 'react';
-import { Modal, Form, Button, Avatar, Typography, Input } from 'antd';
+import { Modal, Form, Button, Avatar, Typography, Input, message } from 'antd';
+import { createAvatar } from './helper/createAvatar';
+import { useUserSession } from '@/hooks/useUserSession';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -8,19 +10,44 @@ interface CreateProjectModalProps {
   visible: boolean;
   onCreate: (values: any) => void;
   onCancel: () => void;
-  user: {
-    name: string;
-    email: string;
-    avatarUrl?: string;
-  };
 }
 
-const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCreate, onCancel, user }) => {
+const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCreate, onCancel }) => {
   const [form] = Form.useForm();
 
-  const onSearch = (value: string) => {
-    console.log('Searching:', value);
-    // Implement search functionality here
+  const { user: loggedInUser } = useUserSession();
+
+  const avatar = createAvatar(loggedInUser?.name as string, 38);
+
+  const handleCreateProject = async () => {
+    const values = form.getFieldsValue(); // Get form values without validation
+
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: values.projectName,
+          contributorId: values.contributor,
+          reviewerId: values.reviewer,
+          approverId: values.approver,
+          userId: loggedInUser?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        message.success('Project created successfully');
+        onCreate(data.project);
+      } else {
+        const errorData = await response.json();
+        message.error(errorData.message || 'Failed to create project');
+      }
+    } catch (error) {
+      message.error('Failed to create project');
+    }
   };
 
   return (
@@ -30,23 +57,13 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then(values => {
-            form.resetFields();
-            onCreate(values);
-          })
-          .catch(info => {
-            console.log('Validate Failed:', info);
-          });
-      }}
+      onOk={handleCreateProject}  // Call the API directly on click
       width={800}
       footer={[
         <Button key="cancel" onClick={onCancel}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={() => form.submit()} disabled>
+        <Button key="submit" type="primary" onClick={handleCreateProject}>
           Create
         </Button>,
       ]}
@@ -55,51 +72,68 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
         form={form}
         layout="vertical"
         name="create_project_form"
-        // onFieldsChange={() => {
-        //   const fields = form.getFieldsError();
-        //   const hasError = fields.some(field => field.errors.length > 0);
-        //   const hasEmptyField = fields.some(field => !field.value);
-        //   form.setFieldsValue({ createDisabled: hasError || hasEmptyField });
-        // }}
       >
         <Form.Item
           name="projectName"
           label="1. Enter a name for the project"
-          rules={[{ required: true, message: 'Please enter the project name' }]}
         >
           <Input placeholder="For eg, Web Development" />
         </Form.Item>
         <Form.Item label="2. Select project members">
           <p style={{ color: 'gray', marginBottom: '24px' }}>
-            You need to select a contributor, reviewer and approver to be able to create the project.
+            You need to select a contributor, reviewer, and approver to be able to create the project.
           </p>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-            <Avatar src={user.avatarUrl || "https://joeschmoe.io/api/v1/random"} style={{ marginRight: '8px' }} size="large" />
-            <div style={{ flexGrow: 1 }}>
-              <strong>{user.name}</strong>
+            {avatar}
+            <div style={{ flexGrow: 1, marginLeft: '12px' }}>
+              <strong>{loggedInUser?.name}</strong>
               <br />
-              <span>{user.email}</span>
+              <span>{loggedInUser?.email}</span>
             </div>
             <span style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin</span>
           </div>
-          <Form.Item
-            name="contributor"
-            rules={[{ required: true, message: 'Please select a contributor' }]}
-          >
-            <Search placeholder="Search by name or email" onSearch={onSearch} enterButton />
-          </Form.Item>
-          <Form.Item
-            name="reviewer"
-            rules={[{ required: true, message: 'Please select a reviewer' }]}
-          >
-            <Search placeholder="Search by name or email" onSearch={onSearch} enterButton />
-          </Form.Item>
-          <Form.Item
-            name="approver"
-            rules={[{ required: true, message: 'Please select an approver' }]}
-          >
-            <Search placeholder="Search by name or email" onSearch={onSearch} enterButton />
-          </Form.Item>
+
+          {/* Contributor */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+            <Form.Item
+              name="contributor"
+              style={{ flexGrow: 1, marginBottom: 0 }}
+            >
+              <Search 
+                placeholder="Search by name or email" 
+                style={{ width: '400px' }} // Set width to 400px
+              />
+            </Form.Item>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Contributor</span>
+          </div>
+
+          {/* Reviewer */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+            <Form.Item
+              name="reviewer"
+              style={{ flexGrow: 1, marginBottom: 0 }}
+            >
+              <Search 
+                placeholder="Search by name or email" 
+                style={{ width: '400px' }} // Set width to 400px
+              />
+            </Form.Item>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Reviewer</span>
+          </div>
+
+          {/* Approver */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+            <Form.Item
+              name="approver"
+              style={{ flexGrow: 1, marginBottom: 0 }}
+            >
+              <Search 
+                placeholder="Search by name or email" 
+                style={{ width: '400px' }} // Set width to 400px
+              />
+            </Form.Item>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold', marginLeft: '12px' }}>Approver</span>
+          </div>
         </Form.Item>
       </Form>
     </Modal>

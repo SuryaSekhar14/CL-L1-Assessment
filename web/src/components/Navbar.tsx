@@ -4,6 +4,7 @@ import { HomeOutlined, BellOutlined, LogoutOutlined } from '@ant-design/icons';
 import { User } from '@/models/User';
 import { createAvatar } from '@/components/helper/createAvatar';
 import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const { Header } = Layout;
 
@@ -13,6 +14,8 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ user, notificationsCount }) => {
+  const router = useRouter();
+
   const menu = (
     <Menu>
       <Menu.Item key="0">
@@ -31,15 +34,31 @@ const Navbar: React.FC<NavbarProps> = ({ user, notificationsCount }) => {
 
   const avatar = createAvatar(user?.name as string, 32);
 
+  // Determine the breadcrumb items based on the current route
+  const breadcrumbItems = [
+    <Breadcrumb.Item href="/" key="home">
+      <HomeOutlined />
+    </Breadcrumb.Item>,
+    <Breadcrumb.Item key="projects">
+      Projects
+    </Breadcrumb.Item>,
+  ];
+
+  // Add 'Tasks' to the breadcrumb if the route matches /project/[projectId]
+  if (router.pathname.startsWith('/project/')) {
+    breadcrumbItems.push(
+      <Breadcrumb.Item key="tasks">
+        Tasks
+      </Breadcrumb.Item>
+    );
+  }
+
   return (
     <Header className="header" style={{ background: '#fff', padding: 0 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Breadcrumb>
-            <Breadcrumb.Item href="">
-              <HomeOutlined />
-            </Breadcrumb.Item>
-            <Breadcrumb.Item>Projects</Breadcrumb.Item>
+            {breadcrumbItems}
           </Breadcrumb>
         </div>
 

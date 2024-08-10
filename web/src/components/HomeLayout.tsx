@@ -3,6 +3,7 @@ import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip,
 import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled, CheckOutlined } from '@ant-design/icons';
 import CreateProjectModal from './CreateProjectModal';
 import { createAvatar } from '@/components/helper/createAvatar';
+import { useRouter } from 'next/router';
 import { useUserSession } from '@/hooks/useUserSession';
 
 const { Content } = Layout;
@@ -32,11 +33,7 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const user = {
-    name: 'Lucian Grey',
-    email: 'luciangrey02@gmail.com',
-    avatarUrl: 'https://joeschmoe.io/api/v1/random',
-  };
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -123,14 +120,18 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         : 
                           []
                       }
+                    onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
+                    style={{ cursor: 'pointer' }}
                   >
-                    <p>Progress</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <p style={{ margin: 0 }}>Progress</p>
+                      <p style={{ margin: 0 }}>{`${completedTasks}/${totalTasks} Tasks`}</p>
+                    </div>
                     <Progress 
                       percent={progress} 
                       status={progress === 100 ? 'success' : 'active'} 
                       format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
                     />
-                    <p>{`${completedTasks}/${totalTasks} Tasks`}</p>
                     <div style={{ marginTop: '12px' }}>
                       <Avatar.Group>
                         {memberNames.map((member, idx) => (
@@ -174,14 +175,18 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
                         <DeleteOutlined key="delete" />,
                       ]
                     }
+                      onClick={() => router.push(`/project/${project.id}`)}  // Navigate to the dynamic route
+                      style={{ cursor: 'pointer' }}
                     >
-                      <p>Progress</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <p style={{ margin: 0 }}>Progress</p>
+                        <p style={{ margin: 0 }}>{`${completedTasks}/${totalTasks} Tasks`}</p>
+                      </div>
                       <Progress 
                         percent={progress} 
                         status={progress === 100 ? 'success' : 'active'} 
                         format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
                       />
-                      <p>{`${completedTasks}/${totalTasks} Tasks`}</p>
                       <div style={{ marginTop: '12px' }}>
                         <Avatar.Group>
                           {memberNames.map((member, idx) => (
@@ -202,7 +207,6 @@ const HomeLayout: React.FC<{ role: string }> = ({ role }) => {
         visible={visible}
         onCreate={onCreate}
         onCancel={() => setVisible(false)}
-        user={user}
       />
     </Content>
   );
