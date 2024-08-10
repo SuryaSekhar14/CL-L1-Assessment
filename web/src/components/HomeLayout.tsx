@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip, message } from 'antd';
+import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip, message, Modal } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled, CheckOutlined } from '@ant-design/icons';
 import CreateProjectModal from './CreateProjectModal';
 import { createAvatar } from '@/components/helper/createAvatar';
 import { useRouter } from 'next/router';
-import { useUserSession } from '@/hooks/useUserSession';
 import { User } from '@/models/User';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
+const { confirm } = Modal;
 
 interface Project {
   id: string;
@@ -58,6 +58,34 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
     console.log('Received values from the form: ', values);
     setVisible(false);
     setProjects(prev => [...prev, values]);
+  };
+
+  const onDelete = (projectId: string) => {
+    confirm({
+      title: 'Are you sure you want to delete this project?',
+      content: 'This action cannot be undone.',
+      onOk: async () => {
+        try {
+          const response = await fetch(`/api/projects/`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ projectId: projectId, userId: user.id }),
+          });
+
+          if (!response.ok) throw new Error('Failed to delete project');
+
+          setProjects(prevProjects => prevProjects.filter(project => project.id !== projectId));
+          message.success('Project deleted successfully');
+        } catch (error) {
+          message.error('Error deleting project');
+        }
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   };
 
   const filteredProjects = projects.filter(project =>
@@ -118,12 +146,13 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                     }
                     actions={
                       role === "admin" ? 
-                          [<EditOutlined key="edit" />,
-                          <DeleteOutlined key="delete" />] 
+                          [
+                            <EditOutlined key="edit" />,
+                            <DeleteOutlined key="delete" onClick={() => onDelete(project.id)} />,
+                          ] 
                         : 
                           []
                       }
-                    // onClick={() => router.push(`/project/${project.id}`)}
                     style={{ cursor: 'pointer' }}
                   >
                   <div onClick={() => router.push(`/project/${project.id}`)} style={{ cursor: 'pointer' }}>
@@ -179,7 +208,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                       actions={
                         [
                         <EditOutlined key="edit" />,
-                        <DeleteOutlined key="delete" />,
+                        <DeleteOutlined key="delete" onClick={() => onDelete(project.id)} />,
                       ]
                     }
                       onClick={() => router.push(`/project/${project.id}`)}

@@ -94,7 +94,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
 
             <Row>
             {tasksToDo.map(task => (
-              <Col span={12} style={{ padding : 5 }}>
+              <Col key={task.id} span={12} style={{ padding : 5 }}>
               <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%'}}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
@@ -110,7 +110,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
 
             <Row>
             {tasksInProgress.map(task => (
-              <Col span={12} style={{ padding : 5 }}>
+              <Col key={task.id} span={12} style={{ padding : 5 }}>
               <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
@@ -139,7 +139,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
 
             <Row>
             {tasksCompleted.map(task => (
-              <Col span={12} style={{ padding : 5 }}>
+              <Col key={task.id} span={12} style={{ padding : 5 }}>
               <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
                 <p style={{ margin: '8px 0', color: '#595959' }}>Completed by {task.assignedTo}</p>
