@@ -14,7 +14,7 @@ export interface Project {
     reviewer: string;
     admin: string;
   };
-  tasks: Task[]; // Array of tasks associated with the project
+  tasks: Task[]; 
 }
 
 // In-memory project storage

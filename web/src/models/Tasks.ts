@@ -65,23 +65,11 @@ export function initializeProjectTasks(projectId: string): Task[] {
 
 // Get tasks for a specific project, optionally filtered by status
 export function getTasks(projectId: string = '1', status?: string): Task[] {
-  // If no project ID is provided, default to project "1"
-  const projectTasks = tasks[projectId] || initialTasks.map(task => ({
-    ...task,
-    id: Task.idCounter++, // Ensure unique ID assignment
-    status: task.group === 1 ? 'active' : 'pending',
-    isCompleted: false,
-    assignedTo: '',
-  }));
+  const projectTasks = tasks[projectId] || [];
 
-  // If no status is provided, return the initial task list
+  // If no status is provided, return all tasks
   if (!status) {
-    return initialTasks.map(task => ({
-      ...task,
-      assignedTo: '',
-      isCompleted: false,
-      status: task.group === 1 ? 'active' : 'pending', // Default status based on group
-    }));
+    return projectTasks;
   }
 
   // Otherwise, filter tasks by the provided status
@@ -93,8 +81,10 @@ export function completeTask(projectId: string, taskId: number): boolean {
   const projectTasks = tasks[projectId];
   if (!projectTasks) return false;
 
-  const task = projectTasks.find(t => t.id === taskId);
-  if (!task) return false;
+  const taskIndex = projectTasks.findIndex(t => t.id === taskId);
+  if (taskIndex === -1) return false;
+
+  const task = projectTasks[taskIndex];
 
   if (task.status !== 'active') {
     return false; // Task can only be completed if it is active
