@@ -1,7 +1,7 @@
 // src/pages/api/tasks.ts
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getTasks, getTasksForProject } from '@/models/Tasks';
+import { getTasks, completeTask } from '@/models/Tasks';
 import { getUserById } from '@/models/User';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         projectId = '1';
       }
 
-      const tasks = getTasksForProject(projectId);
+      const tasks = getTasks(projectId);
 
       if (status && typeof status === 'string') {
         const filteredTasks = tasks.filter(task => task.status === status);
@@ -39,13 +39,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
 
-      const projectRole = user.project.projectRole;
-      if (user.project.projectId !== projectId) {
+      console.log(user, projectId, taskId)
+      // Verify that the user is assigned to the correct project
+      if (user.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: User is not assigned to this project' });
         return;
       }
 
-      const projectTasks = getTasksForProject(projectId);
+      const projectTasks = getTasks(projectId);
       const task = projectTasks.find(t => t.id === taskId);
       if (!task) {
         res.status(404).json({ message: 'Task not found' });
@@ -53,13 +54,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Check if the user is allowed to update the task
-      if (projectRole !== 'approver') {
+      if (user.project.projectRole !== 'approver') {
         res.status(403).json({ message: 'Forbidden: Only approvers can update tasks' });
         return;
       }
 
       Object.assign(task, updates);
-      res.status(200).json({ message: 'Task updated', tasks: getTasksForProject(projectId) });
+      res.status(200).json({ message: 'Task updated', tasks: getTasks(projectId) });
       break;
     }
 
@@ -77,19 +78,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
 
-      const projectRole = user.project.projectRole;
-      if (user.project.projectId !== projectId) {
+      // Verify that the user is assigned to the correct project
+      if (user.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: User is not assigned to this project' });
         return;
       }
 
       // Check if the user is allowed to delete the task
-      if (projectRole !== 'approver') {
+      if (user.project.projectRole !== 'approver') {
         res.status(403).json({ message: 'Forbidden: Only approvers can delete tasks' });
         return;
       }
 
-      const projectTasks = getTasksForProject(projectId);
+      const projectTasks = getTasks(projectId);
       const taskIndex = projectTasks.findIndex(t => t.id === taskId);
       if (taskIndex === -1) {
         res.status(404).json({ message: 'Task not found' });

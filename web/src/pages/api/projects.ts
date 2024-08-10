@@ -1,6 +1,7 @@
+// src/pages/api/projects.ts
+
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getProjects, createProject, deleteProject, initializeProjects } from '@/models/Project';
-import { initializeProjectTasks } from '@/models/Tasks';
+import { getProjects, createProject, deleteProject } from '@/models/Project';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -10,9 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'POST': {
       const { name, contributorId, approverId, reviewerId, userId } = req.body;
-        const newProject = createProject(name, userId, contributorId, approverId, reviewerId);
+      const newProject = createProject(name, contributorId, approverId, reviewerId, userId);
       if (newProject) {
-        initializeProjectTasks(newProject.id);
         res.status(201).json({ message: 'Project created', project: newProject });
       } else {
         res.status(403).json({ message: 'Forbidden: Only admins can manage projects' });
@@ -22,7 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'DELETE': {
       const { projectId, userId } = req.body;
-    //   res.status(200).json({ projectId, userId});
       const deleted = deleteProject(projectId, userId);
       if (deleted) {
         res.status(200).json({ message: 'Project deleted' });
