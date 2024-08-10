@@ -65,20 +65,9 @@ export function initializeProjectTasks(projectId: string): Task[] {
 
 // Get tasks for a specific project, optionally filtered by status
 export function getTasks(projectId: string, status?: string): Task[] {
-  // If no project ID is provided, return the initial tasks with default status and other properties
-  if (!projectId) {
-    return initialTasks.map(task => ({
-      ...task,
-      id: Task.idCounter++, // Ensure unique ID assignment
-      status: task.group === 1 ? 'active' : 'pending', // Default to active for group 1, pending for others
-      isCompleted: false,
-      assignedTo: '', // Default to no assignment
-    }));
-  }
-
   const projectTasks = tasks[projectId] || [];
 
-  // If no status is provided, return all tasks for the project
+  // If no status is provided, return all tasks
   if (!status) {
     return projectTasks;
   }
@@ -86,7 +75,6 @@ export function getTasks(projectId: string, status?: string): Task[] {
   // Otherwise, filter tasks by the provided status
   return projectTasks.filter(task => task.status === status);
 }
-
 
 // Mark a task as completed
 export function completeTask(projectId: string, taskId: number): boolean {
@@ -129,6 +117,18 @@ function activateNextGroup(projectId: string, nextGroup: number): void {
       task.status = 'active';
     }
   });
+}
+
+// Update a task's title
+export function updateTaskTitle(projectId: string, taskId: number, newTitle: string): boolean {
+  const projectTasks = tasks[projectId];
+  if (!projectTasks) return false;
+
+  const taskIndex = projectTasks.findIndex(t => t.id === taskId);
+  if (taskIndex === -1) return false;
+
+  projectTasks[taskIndex].title = newTitle;
+  return true;
 }
 
 // Delete tasks for a specific project

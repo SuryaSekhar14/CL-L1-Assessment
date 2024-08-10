@@ -108,6 +108,7 @@ describe("Tasks API", () => {
         taskId: 1,
         updates: { title: "Updated Title" },
         userId: "3",
+        projectId: project.id,
       },
     });
 
@@ -130,6 +131,7 @@ describe("Tasks API", () => {
         taskId: 1,
         updates: { title: "Updated Title" },
         userId: "2",
+        projectId: project.id,
       },
     });
 
@@ -146,7 +148,7 @@ describe("Tasks API", () => {
 
     let { req, res } = createMocks({
       method: "PUT",
-      body: { taskId: 1, updates: { status: "completed" }, userId: "1" },
+      body: { taskId: 1, updates: { status: "completed" }, userId: "1", projectId: project.id, },
     });
     await handler(req, res);
 
@@ -156,6 +158,7 @@ describe("Tasks API", () => {
         taskId: 2,
         updates: { status: "completed" },
         userId: "2",
+        projectId: project.id,
       },
     }));
 
@@ -174,7 +177,7 @@ describe("Tasks API", () => {
     // Complete all tasks in group 1
     let { req, res } = createMocks({
       method: "PUT",
-      body: { taskId: 1, updates: { status: "completed" }, userId: "admin" },
+      body: { taskId: 1, updates: { status: "completed" }, userId: "admin", projectId: project.id, },
     });
     await handler(req, res);
     req = createMocks({
@@ -183,6 +186,7 @@ describe("Tasks API", () => {
         taskId: 2,
         updates: { status: "completed" },
         userId: "2",
+        projectId: project.id,
       },
     }).req;
     res = createMocks().res;
@@ -201,7 +205,7 @@ describe("Tasks API", () => {
 
     const { req, res } = createMocks({
       method: "DELETE",
-      body: { taskId: 1, userId: "3" },
+      body: { taskId: 1, userId: "3", projectId: project.id },
     });
 
     await handler(req, res);
@@ -217,7 +221,7 @@ describe("Tasks API", () => {
 
     const { req, res } = createMocks({
       method: "DELETE",
-      body: { taskId: 1, userId: "2" },
+      body: { taskId: 1, userId: "2", projectId: project.id },
     });
 
     await handler(req, res);

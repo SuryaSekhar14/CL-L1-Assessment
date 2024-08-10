@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getTasks, completeTask } from '@/models/Tasks';
+import { getTasks, completeTask, updateTaskTitle } from '@/models/Tasks';
 import { getUserById } from '@/models/User';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -26,24 +26,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'PUT': {
       const { userId, taskId, updates, projectId } = req.body;
 
-      // // Default to projectId "1" if not provided
-      // if (!projectId || typeof projectId !== 'string') {
-      //   projectId = '1';
-      // }
-
       if (!userId || !taskId || !projectId || !updates) {
         res.status(400).json({ message: 'Missing required fields' });
         return;
       }
 
       const user = getUserById(userId);
-      // if (!user) {
-      //   res.status(403).json({ message: 'User not found' });
-      //   return;
-      // }
 
       // Allow admins to update any task
-      console.log(user);
       if (user?.role !== 'admin' && user?.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: Only assigned user can mark the task as complete' });
         return;
@@ -63,6 +53,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           res.status(400).json({ message: 'Failed to mark task as completed' });
           return;
         }
+      } else if (updates.title) {
+        // Update the task title
+        // check if user is an approver of the project or an admin by role
+        const ableTo = user?.project.projectRole === 'approver' || user?.role === 'admin';
+
+        if (!ableTo) {
+          res.status(403).json({ message: 'Forbidden: Only approvers can update tasks' });
+          return;
+        }
+
+        const success = updateTaskTitle(projectId, taskId, updates.title);
+        if (!success) {
+          res.status(400).json({ message: 'Failed to update task title' });
+          return;
+        }
       } else {
         // Check if the user is allowed to update the task
         if (user?.project.projectRole !== 'approver' && user?.project.projectRole !== 'admin' && user?.role !== 'admin') {
@@ -78,42 +83,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'DELETE': {
       const { userId, taskId, projectId } = req.body;
-
+    
       if (!userId || !taskId || !projectId) {
         res.status(400).json({ message: 'Missing required fields' });
         return;
       }
-
+    
       const user = getUserById(userId);
       if (!user) {
         res.status(404).json({ message: 'User not found' });
         return;
       }
-
-      // Allow admins to delete any task
+    
+      // Allow admins or users assigned to the project to delete the task
       if (user.role !== 'admin' && user.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: User is not assigned to this project' });
         return;
       }
-
-      // Check if the user is allowed to delete the task
-      if (user.project.projectRole !== 'approver' && user.project.projectRole !== 'admin' && user.role !== 'admin') {
-        res.status(403).json({ message: 'Forbidden: Only approvers or admins can delete tasks' });
+    
+      // Allow only approvers and admins to delete tasks
+      if (user.project.projectRole !== 'approver' && user.role !== 'admin') {
+        res.status(403).json({ message: 'Forbidden: Only approvers can delete tasks' });
         return;
       }
-
+    
       const projectTasks = getTasks(projectId);
       const taskIndex = projectTasks.findIndex(t => t.id === taskId);
       if (taskIndex === -1) {
         res.status(404).json({ message: 'Task not found' });
         return;
       }
-
+    
       projectTasks.splice(taskIndex, 1);
       res.status(200).json({ message: 'Task deleted', tasks: projectTasks });
       break;
     }
-
+    
     default:
       res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       res.status(405).end(`Method ${req.method} Not Allowed`);
