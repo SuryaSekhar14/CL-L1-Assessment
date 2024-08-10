@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Layout, Row, Col, Card, message, Tag, Typography } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
 import { Task } from '@/models/Tasks';
 import { useSession } from 'next-auth/react';
@@ -16,8 +16,7 @@ interface TasksListProps {
 
 const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
   const { data: session } = useSession(); 
-  const { user , isLoading} = useUserSession();
-  // console.log(user);
+  const { user, isLoading } = useUserSession();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,6 +75,11 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
     }
   };
 
+  const handleAddTask = () => {
+    // Logic to add a new task
+    message.info('Add Task button clicked');
+  };
+
   return (
     <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
       <Navbar 
@@ -86,22 +90,36 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
         }} 
         notificationsCount={2} 
       />
-      <Content style= {{ margin: 50 }}>
-        <Title level={2} style={{ marginBottom: '24px', textAlign: 'left' }}>{projectName}</Title>
+      <Content style={{ margin: 50 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Title level={2} style={{ marginBottom: '24px', textAlign: 'left' }}>{projectName}</Title>
+          {user?.project.projectRole === 'approver' && (
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />} 
+              onClick={handleAddTask}
+            >
+              Add Task
+            </Button>
+          )}
+        </div>
         <Row gutter={24}>
           <Col span={8}>
             <Title level={4} style={{ marginBottom: '16px' }}>To Do <Tag>{tasksToDo.length}</Tag></Title>
 
             <Row>
-            {tasksToDo.map(task => (
-              <Col key={task.id} span={12} style={{ padding : 5 }}>
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%'}}>
-                <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
-                <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
-                <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
-              </Card>
-              </Col>
-            ))}
+              {tasksToDo.map(task => (
+                <Col key={task.id} span={12} style={{ padding: 5 }}>
+                  <Card 
+                    key={task.id} 
+                    style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}
+                  >
+                    <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
+                    <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
+                    <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </Col>
 
@@ -109,45 +127,48 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
             <Title level={4} style={{ marginBottom: '16px' }}>In Progress <Tag>{tasksInProgress.length}</Tag></Title>
 
             <Row>
-            {tasksInProgress.map(task => (
-              <Col key={task.id} span={12} style={{ padding : 5 }}>
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
-                <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
-                <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
-                {
-                  task.assignedTo === user?.id ? 
-                        <Button 
-                          type="primary" 
-                          icon={<CheckOutlined />} 
-                          style={{ marginTop: 10 }}
-                          onClick={() => updateTaskAsCompleted(task.id)} 
-                        >
-                          Done
-                        </Button>
-                          :
-                          null
-                }
-              </Card>
-              </Col>
-            ))}
-          </Row>
+              {tasksInProgress.map(task => (
+                <Col key={task.id} span={12} style={{ padding: 5 }}>
+                  <Card 
+                    key={task.id} 
+                    style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}
+                  >
+                    <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
+                    <p style={{ margin: '8px 0', color: '#595959' }}>Assigned to: {task.assignedTo}</p>
+                    <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
+                    {task.assignedTo === user?.id && (
+                      <Button 
+                        type="primary" 
+                        icon={<CheckOutlined />} 
+                        style={{ marginTop: 10 }}
+                        onClick={() => updateTaskAsCompleted(task.id)} 
+                      >
+                        Done
+                      </Button>
+                    )}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </Col>
 
           <Col span={8}>
             <Title level={4} style={{ marginBottom: '16px' }}>Completed <Tag color="green">{tasksCompleted.length}</Tag></Title>
 
             <Row>
-            {tasksCompleted.map(task => (
-              <Col key={task.id} span={12} style={{ padding : 5 }}>
-              <Card key={task.id} style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
-                <p style={{ margin: '8px 0', color: '#595959' }}>Completed by {task.assignedTo}</p>
-                <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
-                <Tag color="green" icon={<CheckOutlined />}>Completed</Tag>
-              </Card>
-              </Col>
-            ))}
+              {tasksCompleted.map(task => (
+                <Col key={task.id} span={12} style={{ padding: 5 }}>
+                  <Card 
+                    key={task.id} 
+                    style={{ marginBottom: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)', maxWidth: '100%' }}
+                  >
+                    <h3 style={{ fontSize: '16px', fontWeight: '500' }}>{task.title}</h3>
+                    <p style={{ margin: '8px 0', color: '#595959' }}>Completed by {task.assignedTo}</p>
+                    <p style={{ margin: '0', color: '#8c8c8c' }}>{task.description}</p>
+                    <Tag color="green" icon={<CheckOutlined />}>Completed</Tag>
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </Col>
         </Row>
