@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Card, Tabs, Input, Button, Progress, Avatar, Tooltip, message, Modal } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled, CheckOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, BookOutlined, BookFilled, CheckCircleFilled } from '@ant-design/icons';
 import CreateProjectModal from './CreateProjectModal';
 import { createAvatar } from '@/components/helper/createAvatar';
 import { useRouter } from 'next/router';
@@ -161,7 +161,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                     <Progress 
                       percent={progress} 
                       status={progress === 100 ? 'success' : 'active'} 
-                      format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
+                      format={percent => (percent === 100 ? <CheckCircleFilled /> : `${percent}%`)}
                     />
                     <div style={{ marginTop: '12px' }}>
                       <Avatar.Group>
@@ -218,7 +218,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                       <Progress 
                         percent={progress} 
                         status={progress === 100 ? 'success' : 'active'} 
-                        format={percent => (percent === 100 ? <CheckOutlined /> : `${percent}%`)}
+                        format={percent => (percent === 100 ? <CheckCircleFilled /> : `${percent}%`)}
                       />
                       <div style={{ marginTop: '12px' }}>
                         <Avatar.Group>

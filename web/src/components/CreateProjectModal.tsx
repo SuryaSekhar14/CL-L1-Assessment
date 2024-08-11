@@ -88,7 +88,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
             <div style={{ flexGrow: 1, marginLeft: '12px' }}>
               <strong>{loggedInUser?.name}</strong>
               <br />
-              <span>{loggedInUser?.email}</span>
+              <span style={{ color: 'gray' }}>{loggedInUser?.email}</span>
             </div>
             <span style={{ marginLeft: 'auto' }}>Admin</span>
           </div>
