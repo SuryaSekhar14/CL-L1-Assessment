@@ -38,8 +38,9 @@ export function createProject(
   //   console.log(isAdmin(userId));
   //   return null;
   // }
- 
-  const projectTasks: Task[] = initializeProjectTasks(Project.idCounter.toString(), contributorId, approverId, reviewerId, userId);
+
+  const projectTasks: Task[] = initializeProjectTasks(Project.idCounter.toString());
+  // console.log(projectTasks);
 
   const newProject: Project = {
     id: Project.idCounter.toString(),

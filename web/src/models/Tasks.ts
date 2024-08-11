@@ -17,36 +17,30 @@ export const Task = {
 
 let tasks: { [projectId: string]: Task[] } = {};
 
-export function initializeProjectTasks(
-  projectId: string, 
-  contributorId?: string, 
-  approverId?: string, 
-  reviewerId?: string, 
-  userId?: string
-): Task[] {
-  Task.idCounter = 1;
+export function initializeProjectTasks(projectId: string): Task[] {
+  Task.idCounter = 1;  
 
-  // const members = getProjectMembers(projectId);
-  // if (!members && parseInt(projectId, 10) < 7) {
-  //   console.log('Project members not found');
-  //   return [];
-  // }
+  const members = getProjectMembers(projectId);
+  if (!members) {
+    console.log('Project members not found');
+    return [];
+  }
 
   const projectTasks = initialTasks.map(task => {
-    let assignedTo: string | undefined = '';
+    let assignedTo = '';
 
     switch (task.persona) {
       case 'contributor':
-        assignedTo = contributorId;
+        assignedTo = members.contributor;
         break;
       case 'approver':
-        assignedTo = approverId;
+        assignedTo = members.approver;
         break;
       case 'reviewer':
-        assignedTo = reviewerId;
+        assignedTo = members.reviewer;
         break;
       case 'admin':
-        assignedTo = userId;
+        assignedTo = members.admin;
         break;
     }
 
@@ -62,6 +56,77 @@ export function initializeProjectTasks(
   tasks[projectId] = projectTasks; 
   return projectTasks;
 }
+
+
+
+// export function initializeProjectTasks(
+//   projectId: string, 
+//   contributorId?: string, 
+//   approverId?: string, 
+//   reviewerId?: string, 
+//   userId?: string
+// ): Task[] {
+//   Task.idCounter = 1;
+
+//   const members = getProjectMembers(projectId);
+//   console.log("Members from getProjectMembers: "  members);
+//   if (!members && parseInt(projectId, 10) >= 7) {
+//     console.log('Project members not found');
+//     return [];
+//   }
+
+//   const projectTasks = initialTasks.map(task => {
+//     let assignedTo: string | undefined = '';
+
+//     if (parseInt(projectId, 10) >= 7 && contributorId && approverId && reviewerId && userId) {
+//       switch (task.persona) {
+//         case 'contributor':
+//           assignedTo = contributorId;
+//           break;
+//         case 'approver':
+//           assignedTo = approverId;
+//           break;
+//         case 'reviewer':
+//           assignedTo = reviewerId;
+//           break;
+//         case 'admin':
+//           assignedTo = userId;
+//           break;
+//       }
+//     } else {
+//       switch (task.persona) {
+//         case 'contributor':
+//           assignedTo = members?.contributor;
+//           break;
+//         case 'approver':
+//           assignedTo = members?.approver;
+//           break;
+//         case 'reviewer':
+//           assignedTo = members?.reviewer;
+//           break;
+//         case 'admin':
+//           assignedTo = members?.admin;
+//           break;
+//       }
+//     }
+
+//     return {
+//       ...task,
+//       id: Task.idCounter++, 
+//       assignedTo,
+//       isCompleted: false,
+//       status: task.group === 1 ? 'active' : 'pending', 
+//     };
+//   });
+
+//   tasks[projectId] = projectTasks; 
+//   return projectTasks;
+// }
+
+
+
+
+
 
 export function getTasks(projectId: string = '1', status?: string): Task[] {
   const projectTasks = tasks[projectId] || [];
