@@ -150,7 +150,19 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                       }
                     style={{ cursor: 'pointer' }}
                   >
-                  <div onClick={() => router.push(`/project/${project.id}`)} style={{ cursor: 'pointer' }}>
+                <button
+                    type="button" 
+                    style={{
+                      all: 'unset', 
+                      width: '100%', 
+                      cursor: 'pointer',
+                      backgroundColor: 'transparent', 
+                      display: 'block',
+                      padding: '0',
+                      textAlign: 'left'
+                    }}
+                    onClick={() => router.push(`/project/${project.id}`)}
+                  >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <p style={{ margin: 0 }}>Progress</p>
                       <p style={{ margin: 0 }}>{`${completedTasks}/${totalTasks} Tasks`}</p>
@@ -169,7 +181,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                         ))}
                       </Avatar.Group>
                     </div>
-                  </div>
+                  </button>
                   </Card>
                 </Col>
               );
