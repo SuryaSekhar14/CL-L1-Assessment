@@ -5,7 +5,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
     case 'GET':
       try {
-        const users = getUsers(); // This will initialize if users is empty
+        const users = getUsers();
         res.status(200).json({ message: 'Users fetched', users });
       } catch (error) {
         res.status(500).json({ message: 'Error fetching users', error });

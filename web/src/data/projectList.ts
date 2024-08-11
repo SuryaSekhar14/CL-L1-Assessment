@@ -39,24 +39,24 @@ export const projects = [
         reviewer: '4',
       }
     },
-    // {
-    //   id: '5',
-    //   name: 'System Design',
-    //   members: {
-    //     admin: '1',
-    //     contributor: '4',
-    //     approver: '2',
-    //     reviewer: '3',
-    //   }
-    // },
-    // {
-    //   id: '6',
-    //   name: 'Front-End Develop-mental',
-    //   members: {
-    //     admin: '1',
-    //     contributor: '3',
-    //     approver: '4',
-    //     reviewer: '2',
-    //   }
-    // },
+    {
+      id: '5',
+      name: 'System Design',
+      members: {
+        admin: '1',
+        contributor: '4',
+        approver: '2',
+        reviewer: '3',
+      }
+    },
+    {
+      id: '6',
+      name: 'Front-End Develop-mental',
+      members: {
+        admin: '1',
+        contributor: '3',
+        approver: '4',
+        reviewer: '2',
+      }
+    },
   ];

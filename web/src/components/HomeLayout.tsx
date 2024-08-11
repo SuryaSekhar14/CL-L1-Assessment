@@ -33,9 +33,8 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
   const [bookmarked, setBookmarked] = useState<string[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-
   const router = useRouter();
-  console.log(user);
+  // console.log(user);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -132,7 +131,6 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
               const totalTasks = project.tasks.length;
               const progress = (completedTasks / totalTasks) * 100;
 
-              // Extract member names from the members object
               const memberNames = Object.values(project.members);
 
               return (
@@ -195,7 +193,6 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                 const totalTasks = project.tasks.length;
                 const progress = (completedTasks / totalTasks) * 100;
 
-                // Extract member names from the members object
                 const memberNames = Object.values(project.members);
 
                 return (

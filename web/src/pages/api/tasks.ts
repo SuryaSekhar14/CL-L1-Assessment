@@ -32,8 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       const user = getUserById(userId);
-
-      // Allow admins to update any task
       if (user?.role !== 'admin' && user?.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: Only assigned user can mark the task as complete' });
         return;
@@ -46,7 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
 
-      // Mark the task as completed if the status update is to 'completed'
       if (updates.status === 'completed') {
         const success = completeTask(projectId, taskId);
         if (!success) {
@@ -54,8 +51,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return;
         }
       } else if (updates.title) {
-        // Update the task title
-        // check if user is an approver of the project or an admin by role
         const ableTo = user?.project.projectRole === 'approver' || user?.role === 'admin';
 
         if (!ableTo) {
@@ -69,7 +64,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return;
         }
       } else {
-        // Check if the user is allowed to update the task
         if (user?.project.projectRole !== 'approver' && user?.project.projectRole !== 'admin' && user?.role !== 'admin') {
           res.status(403).json({ message: 'Forbidden: Only assigned user can mark the task as complete' });
           return;
@@ -95,13 +89,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
     
-      // Allow admins or users assigned to the project to delete the task
       if (user.role !== 'admin' && user.project?.projectId !== projectId) {
         res.status(403).json({ message: 'Forbidden: User is not assigned to this project' });
         return;
       }
-    
-      // Allow only approvers and admins to delete tasks
+
       if (user.project.projectRole !== 'approver' && user.role !== 'admin') {
         res.status(403).json({ message: 'Forbidden: Only approvers can delete tasks' });
         return;

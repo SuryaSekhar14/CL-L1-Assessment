@@ -34,7 +34,6 @@ const Navbar: React.FC<NavbarProps> = ({ user, notificationsCount }) => {
 
   const avatar = createAvatar(user?.name as string, 32);
 
-  // Determine the breadcrumb items based on the current route
   const breadcrumbItems = [
     <Breadcrumb.Item href="/" key="home">
       <HomeOutlined />
@@ -44,7 +43,6 @@ const Navbar: React.FC<NavbarProps> = ({ user, notificationsCount }) => {
     </Breadcrumb.Item>,
   ];
 
-  // Add 'Tasks' to the breadcrumb if the route matches /project/[projectId]
   if (router.pathname.startsWith('/project/')) {
     breadcrumbItems.push(
       <Breadcrumb.Item key="tasks">

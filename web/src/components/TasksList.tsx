@@ -85,7 +85,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
       <Navbar 
         user={{
           name: session?.user?.name || '',
-          role: 'admin', // Update this if you have the role in the session
+          role: 'admin',
           email: session?.user?.email || ''
         }} 
         notificationsCount={2} 

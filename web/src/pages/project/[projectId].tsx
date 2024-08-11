@@ -16,7 +16,7 @@ const ProjectTasksPage = () => {
   }, [projectId]);
 
   if (!projectId) {
-    return <div>Project ID not found... {projectId} {projectName}</div>; // Handle loading state
+    return <div>Project ID not found... {projectId} {projectName}</div>;
   }
 
   return (

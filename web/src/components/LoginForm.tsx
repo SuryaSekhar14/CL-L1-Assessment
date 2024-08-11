@@ -6,7 +6,6 @@ const { Title } = Typography;
 const LoginForm: React.FC = () => {
   const onFinish = (values: any) => {
     console.log('Received values:', values);
-    // Handle login logic here, possibly with next-auth
   };
 
   return (

@@ -1,5 +1,3 @@
-// src/pages/api/projects.ts
-
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getProjects, createProject, deleteProject } from '@/models/Project';
 import { isAdmin } from '@/models/User';

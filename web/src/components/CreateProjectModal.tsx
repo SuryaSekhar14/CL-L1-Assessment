@@ -20,7 +20,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
   const avatar = createAvatar(loggedInUser?.name as string, 38);
 
   const handleCreateProject = async () => {
-    const values = form.getFieldsValue(); // Get form values without validation
+    const values = form.getFieldsValue();
 
     try {
       const response = await fetch('/api/projects', {
@@ -57,7 +57,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
-      onOk={handleCreateProject}  // Call the API directly on click
+      onOk={handleCreateProject}
       width={800}
       footer={[
         <Button key="cancel" onClick={onCancel}>
@@ -90,10 +90,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
               <br />
               <span>{loggedInUser?.email}</span>
             </div>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin</span>
+            <span style={{ marginLeft: 'auto' }}>Admin</span>
           </div>
 
-          {/* Contributor */}
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
             <Form.Item
               name="contributor"
@@ -104,10 +103,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Contributor</span>
+            <span style={{ marginLeft: 'auto'}}>Contributor</span>
           </div>
 
-          {/* Reviewer */}
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
             <Form.Item
               name="reviewer"
@@ -118,10 +116,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Reviewer</span>
+            <span style={{ marginLeft: 'auto'}}>Reviewer</span>
           </div>
 
-          {/* Approver */}
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
             <Form.Item
               name="approver"
@@ -132,7 +129,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
                 style={{ width: '400px' }} // Set width to 400px
               />
             </Form.Item>
-            <span style={{ marginLeft: 'auto', fontWeight: 'bold'}}>Approver</span>
+            <span style={{ marginLeft: 'auto'}}>Approver</span>
           </div>
         </Form.Item>
       </Form>
