@@ -39,7 +39,7 @@ export function createProject(
   //   return null;
   // }
  
-  const projectTasks: Task[] = initializeProjectTasks(Project.idCounter.toString());
+  const projectTasks: Task[] = initializeProjectTasks(Project.idCounter.toString(), contributorId, approverId, reviewerId, userId);
 
   const newProject: Project = {
     id: Project.idCounter.toString(),

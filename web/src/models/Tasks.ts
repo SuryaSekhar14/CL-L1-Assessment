@@ -6,7 +6,7 @@ export interface Task {
   title: string;
   description: string;
   group: number;
-  assignedTo: string;
+  assignedTo: string | undefined;
   isCompleted: boolean;
   status: string;
 }
@@ -17,30 +17,36 @@ export const Task = {
 
 let tasks: { [projectId: string]: Task[] } = {};
 
-export function initializeProjectTasks(projectId: string): Task[] {
-  // Reset the task ID counter
+export function initializeProjectTasks(
+  projectId: string, 
+  contributorId?: string, 
+  approverId?: string, 
+  reviewerId?: string, 
+  userId?: string
+): Task[] {
   Task.idCounter = 1;
 
-  const members = getProjectMembers(projectId);
-  if (!members) {
-    return [];
-  }
+  // const members = getProjectMembers(projectId);
+  // if (!members && parseInt(projectId, 10) < 7) {
+  //   console.log('Project members not found');
+  //   return [];
+  // }
 
   const projectTasks = initialTasks.map(task => {
-    let assignedTo = '';
+    let assignedTo: string | undefined = '';
 
     switch (task.persona) {
       case 'contributor':
-        assignedTo = members.contributor;
+        assignedTo = contributorId;
         break;
       case 'approver':
-        assignedTo = members.approver;
+        assignedTo = approverId;
         break;
       case 'reviewer':
-        assignedTo = members.reviewer;
+        assignedTo = reviewerId;
         break;
       case 'admin':
-        assignedTo = members.admin;
+        assignedTo = userId;
         break;
     }
 
