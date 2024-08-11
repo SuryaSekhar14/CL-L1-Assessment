@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'DELETE': {
       const { projectId, userId } = req.body;
-      console.log(projectId, userId);
       const deleted = deleteProject(projectId, userId);
       if (deleted) {
         res.status(200).json({ message: 'Project deleted' });

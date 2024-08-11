@@ -12,11 +12,9 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
 
   const onFinish = async (values: any) => {
-    console.log('Received values:', values);
     const result = await signIn('credentials', {
         email: email,
         password: password,
-        // callbackUrl: '/',
         redirect: false,
     });
     if (result?.error) {

@@ -108,12 +108,11 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
   const handleModalSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log('Form Values:', values);
 
       message.success('Task added successfully');
       form.resetFields();
     } catch (errorInfo) {
-      console.log('Validation Failed:', errorInfo);
+      console.error('Validation Failed:', errorInfo);
     }
   };
 

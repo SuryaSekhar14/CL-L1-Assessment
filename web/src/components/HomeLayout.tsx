@@ -34,7 +34,6 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  // console.log(user);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -54,7 +53,6 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
   }, []);
 
   const onCreate = (values: any) => {
-    console.log('Received values from the form: ', values);
     setVisible(false);
     setProjects(prev => [...prev, values]);
   };
@@ -82,7 +80,6 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
         }
       },
       onCancel() {
-        console.log('Cancel');
       },
     });
   };

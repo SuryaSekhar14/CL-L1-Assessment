@@ -17,7 +17,6 @@ const HomePage = () => {
   const notificationsCount = 9;
 
   const { user: loggedInUser, isLoading } = useUserSession();
-  // console.log(loggedInUser?.role, isLoading);
   const userRole = loggedInUser?.role;
 
   return (

@@ -5,7 +5,6 @@ const { Title } = Typography;
 
 const LoginForm: React.FC = () => {
   const onFinish = (values: any) => {
-    console.log('Received values:', values);
   };
 
   return (
