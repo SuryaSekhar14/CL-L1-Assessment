@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Layout, Row, Col, Card, message, Tag, Typography, Badge } from 'antd';
+import { Button, Layout, Row, Col, Card, message, Tag, Typography, Badge, Modal, Form, Input, Select } from 'antd';
 import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
 import Navbar from '@/components/Navbar';
 import { Task } from '@/models/Tasks';
@@ -8,6 +8,7 @@ import { useUserSession } from '@/hooks/useUserSession';
 
 const { Content } = Layout;
 const { Title } = Typography;
+const { Option } = Select;
 
 interface TasksListProps {
   projectId: string;
@@ -19,6 +20,9 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
   const { user, isLoading } = useUserSession();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
+  const [projectMembers, setProjectMembers] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -37,6 +41,24 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
     };
 
     fetchTasks();
+  }, [projectId]);
+
+  useEffect(() => {
+    const fetchProjectMembers = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) throw new Error('Failed to fetch projects');
+        const data = await response.json();
+        const project = data.projects.find((proj: any) => proj.id === projectId);
+        if (project) {
+          setProjectMembers(project.members);
+        }
+      } catch (error) {
+        message.error('Error loading project members');
+      }
+    };
+
+    fetchProjectMembers();
   }, [projectId]);
 
   if (loading) {
@@ -76,8 +98,23 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
   };
 
   const handleAddTask = () => {
-    // Logic to add a new task
-    message.info('Add Task button clicked');
+    setIsModalVisible(true);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleModalSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log('Form Values:', values);
+
+      message.success('Task added successfully');
+      form.resetFields();
+    } catch (errorInfo) {
+      console.log('Validation Failed:', errorInfo);
+    }
   };
 
   return (
@@ -172,6 +209,49 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
             </Row>
           </Col>
         </Row>
+
+        <Modal
+          title="Add Task"
+          visible={isModalVisible}
+          onCancel={handleModalCancel}
+          onOk={handleModalSubmit}
+        >
+          <Form form={form} layout="vertical">
+            <Form.Item
+              name="title"
+              label="Task Name"
+              rules={[{ required: true, message: 'Please enter the task name' }]}
+            >
+              <Input placeholder="Enter task name" />
+            </Form.Item>
+
+            <Form.Item
+              name="description"
+              label="Task Description"
+              rules={[{ required: true, message: 'Please enter the task description' }]}
+            >
+              <Input.TextArea rows={4} placeholder="Enter task description" />
+            </Form.Item>
+
+            <Form.Item
+              name="assignedTo"
+              label="Assign To"
+              rules={[{ required: true, message: 'Please select a user to assign this task' }]}
+            >
+              <Select
+                showSearch
+                placeholder="Search and select a user"
+                optionFilterProp="children"
+              >
+                {Object.entries(projectMembers).map(([role, memberName]) => (
+                  <Option key={role} value={memberName}>
+                    {memberName} ({role})
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Form>
+        </Modal>
       </Content>
     </Layout>
   );
