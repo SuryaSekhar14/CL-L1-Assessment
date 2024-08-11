@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Dropdown, Avatar, Breadcrumb, Badge } from 'antd';
+import { Layout, Menu, Dropdown, Avatar, Breadcrumb, Badge, message } from 'antd';
 import { HomeOutlined, BellOutlined, LogoutOutlined } from '@ant-design/icons';
 import { User } from '@/models/User';
 import { createAvatar } from '@/components/helper/createAvatar';
@@ -62,7 +62,10 @@ const Navbar: React.FC<NavbarProps> = ({ user, notificationsCount }) => {
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Badge count={notificationsCount} offset={[-30, 0]}>
-            <BellOutlined style={{ fontSize: '20px', cursor: 'pointer', marginRight: '32px' }} />
+            <BellOutlined 
+              style={{ fontSize: '20px', cursor: 'pointer', marginRight: '32px' }} 
+              onClick={() => message.info("Meow")}
+            />
           </Badge>
           <Dropdown overlay={menu} trigger={['click']}>
             <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
