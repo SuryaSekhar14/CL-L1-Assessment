@@ -9,7 +9,7 @@
 export const users = [
   { id: "1", 
     role: "admin",
-    name: "User1",
+    name: "Administrator",
     email: "user1@example.com",
     pass: "111",
     project: {
@@ -20,7 +20,7 @@ export const users = [
   {
     id: "2", 
     role: "staff",
-    name: "User2",
+    name: "Surya Sekhar Datta",
     email: "user2@example.com",
     pass: "222",
     project: {
@@ -31,7 +31,7 @@ export const users = [
   {
     id: "3", 
     role: "staff",
-    name: "User3",
+    name: "Kartik Dey",
     email: "user3@example.com",
     pass: "333",
     project: {
@@ -42,7 +42,7 @@ export const users = [
   {
     id: "4", 
     role: "staff",
-    name: "User4",
+    name: "Andy Robson",
     email: "user4@example.com",
     pass: "444",
     project: {
