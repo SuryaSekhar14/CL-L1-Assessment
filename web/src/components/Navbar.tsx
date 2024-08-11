@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Menu, Dropdown, Avatar, Breadcrumb, Badge, message } from 'antd';
+import { Layout, Menu, Dropdown, Breadcrumb, Badge, message } from 'antd';
 import { HomeOutlined, BellOutlined, LogoutOutlined } from '@ant-design/icons';
 import { User } from '@/models/User';
 import { createAvatar } from '@/components/helper/createAvatar';

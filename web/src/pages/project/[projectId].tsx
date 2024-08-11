@@ -21,7 +21,7 @@ const ProjectTasksPage = () => {
 
   return (
     <div>
-      <TasksList projectId={projectId as string} projectName={projectName as string} />
+      <TasksList projectId={projectId} projectName={projectName as string} />
     </div>
   );
 };
