@@ -7,7 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'GET': {
       let { status, projectId } = req.query;
 
-      // Default to projectId "1" if not provided
       if (!projectId || typeof projectId !== 'string') {
         projectId = '1';
       }

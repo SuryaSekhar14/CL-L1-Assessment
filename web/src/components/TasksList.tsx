@@ -17,7 +17,7 @@ interface TasksListProps {
 
 const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
   const { data: session } = useSession(); 
-  const { user, isLoading } = useUserSession();
+  const { user } = useUserSession();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -107,7 +107,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
 
   const handleModalSubmit = async () => {
     try {
-      const values = await form.validateFields();
+      await form.validateFields();
 
       message.success('Task added successfully');
       form.resetFields();
@@ -120,9 +120,9 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
     <Layout style={{ minHeight: '100vh', background: '#f0f2f5' }}>
       <Navbar 
         user={{
-          name: session?.user?.name || '',
+          name: session?.user?.name ?? '',
           role: 'admin',
-          email: session?.user?.email || ''
+          email: session?.user?.email ?? ''
         }} 
         notificationsCount={2} 
       />
@@ -211,7 +211,7 @@ const TasksList: React.FC<TasksListProps> = ({ projectId, projectName }) => {
 
         <Modal
           title="Add Task"
-          visible={isModalVisible}
+          open={isModalVisible}
           onCancel={handleModalCancel}
           onOk={handleModalSubmit}
         >

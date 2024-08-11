@@ -131,7 +131,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
               const memberNames = Object.values(project.members);
 
               return (
-                <Col span={8} key={index}>
+                <Col span={8} key={`${project.id}_${index}`}>
                   <Card
                     title={project.name}
                     extra={
@@ -193,7 +193,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                 const memberNames = Object.values(project.members);
 
                 return (
-                  <Col span={8} key={index}>
+                  <Col span={8} key={`${project.id}_${index}`}>
                     <Card
                       title={project.name}
                       extra={
@@ -220,7 +220,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                       <div style={{ marginTop: '12px' }}>
                         <Avatar.Group>
                           {memberNames.map((member, idx) => (
-                            <Tooltip title={member} key={idx}>
+                            <Tooltip title={member} key={`${member}_${idx}`}>
                               {createAvatar(member, 40, idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00')}
                             </Tooltip>
                           ))}

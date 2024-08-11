@@ -1,6 +1,6 @@
 import { projects as initialProjects } from '@/data/projectList';
-import { getUserById, isAdmin, updateUserRole } from './User';
-import { Task, initializeProjectTasks, getTasks, deleteTasksForProject } from './Tasks';
+import { getUserById, updateUserRole } from './User';
+import { Task, initializeProjectTasks, deleteTasksForProject } from './Tasks';
 
 export interface Project {
   id: string;

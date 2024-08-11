@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Button, Avatar, Typography, Input, message } from 'antd';
+import { Modal, Form, Button, Typography, Input, message } from 'antd';
 import { createAvatar } from './helper/createAvatar';
 import { useUserSession } from '@/hooks/useUserSession';
 
@@ -100,7 +100,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
             >
               <Search 
                 placeholder="Search by name or email" 
-                style={{ width: '400px' }} // Set width to 400px
+                style={{ width: '400px' }}
               />
             </Form.Item>
             <span style={{ marginLeft: 'auto'}}>Contributor</span>
@@ -113,7 +113,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
             >
               <Search 
                 placeholder="Search by name or email" 
-                style={{ width: '400px' }} // Set width to 400px
+                style={{ width: '400px' }}
               />
             </Form.Item>
             <span style={{ marginLeft: 'auto'}}>Reviewer</span>
@@ -126,7 +126,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ visible, onCrea
             >
               <Search 
                 placeholder="Search by name or email" 
-                style={{ width: '400px' }} // Set width to 400px
+                style={{ width: '400px' }} 
               />
             </Form.Item>
             <span style={{ marginLeft: 'auto'}}>Approver</span>

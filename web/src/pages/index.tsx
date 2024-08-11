@@ -2,13 +2,12 @@ import React from 'react';
 import { Layout } from 'antd';
 import Navbar from '@/components/Navbar';
 import HomeLayout from '@/components/HomeLayout';
-import { useSession } from 'next-auth/react';
 import { useUserSession } from '@/hooks/useUserSession';
 import { User } from '@/models/User';
 
 const HomePage = () => {
   // const user = {
-  //   name: 'meow meow',
+  //   name: 'Surya Sekhar Datta',
   //   email: 'surya@gmail.com',
   //   role: 'Admin',
   //   avatarUrl: 'https://suryasekhardatta.com',
@@ -16,7 +15,7 @@ const HomePage = () => {
   
   const notificationsCount = 9;
 
-  const { user: loggedInUser, isLoading } = useUserSession();
+  const { user: loggedInUser } = useUserSession();
   const userRole = loggedInUser?.role;
 
   return (
