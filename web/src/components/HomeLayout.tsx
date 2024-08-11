@@ -175,7 +175,7 @@ const HomeLayout: React.FC<{ role: string, user: User }> = ({ role, user }) => {
                     <div style={{ marginTop: '12px' }}>
                       <Avatar.Group>
                         {memberNames.map((member, idx) => (
-                          <Tooltip title={member} key={`${member}_${idx}`}>
+                          <Tooltip title={member} key={idx}>
                             {createAvatar(member, 40, idx === 0 ? '#f56a00' : idx === 1 ? '#7265e6' : '#ffbf00')}
                           </Tooltip>
                         ))}
